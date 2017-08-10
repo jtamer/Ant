@@ -30,27 +30,32 @@
         }
         return WHITE;
     }
-
-    while (curPos[0] >= 0 && curPos[1] >= 0
-            && curPos[0] < canvasSize[0] && curPos[1] < canvasSize[1]) {
-        var curColor = getCurColor()
-        if (curColor == WHITE){
-            curColor = BLACK;
-            grid[curPos[0]][curPos[1]] = curColor;
-            fillRect(curColor);
-            curDir = [curDir[1],-curDir[0]]
-            curPos[0] += curDir[0];
-            curPos[1] += curDir[1];           
-        } else {
-            curColor = WHITE;
-            grid[curPos[0]][curPos[1]] = curColor;
-            fillRect(curColor);
-            curDir = [-curDir[1],curDir[0]]
-            curPos[0] += curDir[0];
-            curPos[1] += curDir[1];
-        }
-        
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
+    async function runAnt() {
+        while (curPos[0] >= 0 && curPos[1] >= 0
+                && curPos[0] < canvasSize[0] && curPos[1] < canvasSize[1]) {
+            var curColor = getCurColor()
+            if (curColor == WHITE){
+                curColor = BLACK;
+                grid[curPos[0]][curPos[1]] = curColor;
+                fillRect(curColor);
+                curDir = [curDir[1],-curDir[0]]
+                curPos[0] += curDir[0];
+                curPos[1] += curDir[1];           
+            } else {
+                curColor = WHITE;
+                grid[curPos[0]][curPos[1]] = curColor;
+                fillRect(curColor);
+                curDir = [-curDir[1],curDir[0]]
+                curPos[0] += curDir[0];
+                curPos[1] += curDir[1];
+            }
+            await sleep(10);
+        }       
+    }
+    runAnt();
 </script>
     </body>
 </html>
