@@ -5,7 +5,11 @@
         </canvas>
 <script>
     var antCanvas=document.getElementById("antCanvas");
-    
+    var blkSize = 10;
+    var startPos = [70,30];
+    var ctx = antCanvas.getContext("2d")
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(startPos[0]*blkSize, startPos[1]*blkSize,blkSize, blkSize);
 </script>
     </body>
 </html>
