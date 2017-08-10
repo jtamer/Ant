@@ -4,12 +4,53 @@
         style="border:1px solid #000000;"> 
         </canvas>
 <script>
+    var BLACK = "#000000";
+    var WHITE = "#ffffff";
+
     var antCanvas=document.getElementById("antCanvas");
     var blkSize = 10;
-    var startPos = [70,30];
-    var ctx = antCanvas.getContext("2d")
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(startPos[0]*blkSize, startPos[1]*blkSize,blkSize, blkSize);
+    var canvasSize = [antCanvas.width / blkSize, antCanvas.height / blkSize];
+    var grid = [];
+    for (var i = 0; i < canvasSize[0]; i++) {
+        grid.push([]);
+    }
+    var curPos = [canvasSize[0] / 2, canvasSize[1] / 2];
+    var curDir = [0,-1];
+    var ctx = antCanvas.getContext("2d");
+
+    function fillRect(color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(curPos[0]*blkSize, curPos[1]*blkSize, blkSize, blkSize);
+    }
+
+    function getCurColor(){
+        var curColor = grid[curPos[0]][curPos[1]];
+        if (curColor == BLACK) {
+            return BLACK;           
+        }
+        return WHITE;
+    }
+
+    while (curPos[0] >= 0 && curPos[1] >= 0
+            && curPos[0] < canvasSize[0] && curPos[1] < canvasSize[1]) {
+        var curColor = getCurColor()
+        if (curColor == WHITE){
+            curColor = BLACK;
+            grid[curPos[0]][curPos[1]] = curColor;
+            fillRect(curColor);
+            curDir = [curDir[1],-curDir[0]]
+            curPos[0] += curDir[0];
+            curPos[1] += curDir[1];           
+        } else {
+            curColor = WHITE;
+            grid[curPos[0]][curPos[1]] = curColor;
+            fillRect(curColor);
+            curDir = [-curDir[1],curDir[0]]
+            curPos[0] += curDir[0];
+            curPos[1] += curDir[1];
+        }
+        
+    }
 </script>
     </body>
 </html>
