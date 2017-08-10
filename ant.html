@@ -7,6 +7,7 @@
     var BLACK = "#000000";
     var WHITE = "#ffffff";
 
+    var rainbowColor = Math.floor( Math.random() * 100 ) * 255;
     var antCanvas=document.getElementById("antCanvas");
     var blkSize = 10;
     var canvasSize = [antCanvas.width / blkSize, antCanvas.height / blkSize];
@@ -17,6 +18,39 @@
     var curPos = [canvasSize[0] / 2, canvasSize[1] / 2];
     var curDir = [0,-1];
     var ctx = antCanvas.getContext("2d");
+
+    function colorHex(x) {
+        var s = x.toString(16);
+        return (s.length < 2) ? ('0'+s) : s;
+    }
+
+    function getRainbowColor() {
+        ++rainbowColor;
+        var rc = rainbowColor % (255 * 6);
+        if (rc < 255) {
+            return '#' + colorHex(rc) + '00ff';
+        }
+        rc -= 255;
+        if (rc < 255) {
+            return '#ff00' + colorHex(255 - rc);
+        }
+        rc -= 255;
+        if (rc < 255) {
+            return '#ff' + colorHex(rc) + '00';
+        }
+        rc -= 255;
+        if (rc < 255) {
+            return '#' + colorHex(255 - rc) + 'ff00';
+        }
+        rc -= 255;
+        if (rc < 255) {
+            return '#00ff' + colorHex(rc);
+        }
+        rc -= 255;
+        if (rc < 255) {
+            return '#00' + colorHex(255 - rc) + 'ff';
+        }
+    }
 
     function fillRect(color) {
         ctx.fillStyle = color;
@@ -34,25 +68,29 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
     async function runAnt() {
+        ctx.fillStyle = BLACK;
+        ctx.fillRect(0, 0, antCanvas.width, antCanvas.height);
         while (curPos[0] >= 0 && curPos[1] >= 0
                 && curPos[0] < canvasSize[0] && curPos[1] < canvasSize[1]) {
             var curColor = getCurColor()
             if (curColor == WHITE){
                 curColor = BLACK;
                 grid[curPos[0]][curPos[1]] = curColor;
-                fillRect(curColor);
+                fillRect(BLACK);
                 curDir = [curDir[1],-curDir[0]]
                 curPos[0] += curDir[0];
                 curPos[1] += curDir[1];           
             } else {
                 curColor = WHITE;
                 grid[curPos[0]][curPos[1]] = curColor;
-                fillRect(curColor);
+                var rainbowColor = getRainbowColor();
+                // console.log(rainbowColor);
+                fillRect(rainbowColor);
                 curDir = [-curDir[1],curDir[0]]
                 curPos[0] += curDir[0];
                 curPos[1] += curDir[1];
             }
-            await sleep(10);
+            await sleep(1);
         }       
     }
     runAnt();
