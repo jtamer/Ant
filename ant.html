@@ -69,9 +69,11 @@
       ctx.arc(curPos[0], curPos[1], blkSize, 0, 2 * Math.PI, false);
       ctx.fillStyle = color;
       ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = color;
-      ctx.stroke();
+      if (color === BLACK) {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+      }
     }
 
     function getCurColor(){
