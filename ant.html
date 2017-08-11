@@ -1,23 +1,35 @@
 <html>
-    <body>
-        <canvas id="antCanvas" width = "1400" height="1200" 
+    <body bgcolor="#000000">
+        <center>
+        <canvas id="antCanvas" width = "1400" height="750" 
         style="border:1px solid #000000;"> 
         </canvas>
+        </center>
 <script>
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return parseFloat(decodeURIComponent(results[2].replace(/\+/g, " ")));
+    }
+
     var BLACK = "#000000";
     var WHITE = "#ffffff";
+    var antCanvas = document.getElementById('antCanvas');
 
-    var RECTANGULAR = Math.PI / 2;
-    var HEXAGONAL = Math.PI / 3;
-    var GRID_TYPE = HEXAGONAL;
+    var ROTATION_ANGLE = 2 * Math.PI / (getParameterByName('grid') || 4);
 
     var rainbowColor = Math.random() * 255 * 6;
-    var antCanvas=document.getElementById("antCanvas");
-    var blkSize = 3;
+    var blkSize = getParameterByName('size') || 5;
     var canvasSize = [antCanvas.width, antCanvas.height];
-    var curPos = [canvasSize[0] / 2, 2 * canvasSize[1] / 3];
-    var curDir = 0;
-    var ctx = antCanvas.getContext("2d");
+    var curPos = [canvasSize[0] * (getParameterByName('x') || 0.5),
+                  canvasSize[1] * (getParameterByName('y') || 0.5)];
+    var curDir = Math.PI / 180 * (getParameterByName('angle') || 0);
+
+    var ctx = antCanvas.getContext('2d');
 
     function colorHex(x) {
         var s = x.toString(16);
@@ -25,7 +37,7 @@
     }
 
     function getRainbowColor() {
-        rainbowColor += 0.1;
+        rainbowColor += (getParameterByName('color') || 1);
         var rc = Math.floor(rainbowColor) % (255 * 6);
         if (rc < 255) {
             return '#' + colorHex(rc) + '00ff';
@@ -81,20 +93,20 @@
             if (curColor != BLACK){
                 curColor = BLACK;
                 fillCircle(BLACK);
-                curDir += GRID_TYPE;
-                curPos[0] += Math.cos(curDir) * blkSize * 2.1;
-                curPos[1] += Math.sin(curDir) * blkSize * 2.1;
+                curDir += ROTATION_ANGLE;
+                curPos[0] += Math.cos(curDir) * blkSize * 2.3;
+                curPos[1] += Math.sin(curDir) * blkSize * 2.3;
             } else {
                 curColor = WHITE;
                 var rainbowColor = getRainbowColor();
                 fillCircle(rainbowColor);
-                curDir -= GRID_TYPE;
-                curPos[0] += Math.cos(curDir) * blkSize * 2.1;
-                curPos[1] += Math.sin(curDir) * blkSize * 2.1;
+                curDir -= ROTATION_ANGLE;
+                curPos[0] += Math.cos(curDir) * blkSize * 2.3;
+                curPos[1] += Math.sin(curDir) * blkSize * 2.3;
             }
             ++steps;
-            if (steps % 10 == 0) {
-                await sleep(1);
+            if (steps % (getParameterByName('skip') || 1) == 0) {
+                await sleep(getParameterByName('delay') || 1);
             }
         }       
     }
